@@ -37,14 +37,17 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-if signals['entry_price']:
+# Only show entry/exit points if they exist
+if signals['action'] != 'hold':
     col1, col2, col3 = st.columns(3)
     with col1:
         st.metric("Entry Price", f"{signals['entry_price']:.4f}")
     with col2:
-        st.metric("Stop Loss", f"{signals['stop_loss']:.4f}")
+        if signals['stop_loss']:
+            st.metric("Stop Loss", f"{signals['stop_loss']:.4f}")
     with col3:
-        st.metric("Take Profit", f"{signals['take_profit']:.4f}")
+        if signals['take_profit']:
+            st.metric("Take Profit", f"{signals['take_profit']:.4f}")
 
 st.subheader("Signal Analysis")
 st.markdown("### Key Reasons for Signal")
