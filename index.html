@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forex Wizard - Smart Trading Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -48,16 +49,82 @@
         .cta-button:hover {
             background: #1e3c72;
         }
+        .analysis-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+        .signal-card {
+            border-left: 4px solid;
+            padding: 1rem;
+            margin: 1rem 0;
+            background: rgba(0,0,0,0.05);
+        }
+        .signal-buy {
+            border-color: #4CAF50;
+        }
+        .signal-sell {
+            border-color: #f44336;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>Forex Wizard</h1>
         <p>Advanced Trading Platform with Smart Analysis</p>
-        <a href="https://replit.com/@USERNAME/Forex-wizard-" class="cta-button">Launch Application</a>
+        <a href="https://replit.com/@USERNAME/Forex-wizard-" class="cta-button">Launch Live Application</a>
     </div>
-    
+
     <div class="container">
+        <div class="analysis-section">
+            <h2>Smart Trading Analysis Demo</h2>
+            <div class="signal-card signal-buy">
+                <h3>Trading Signal: BUY (STRONG)</h3>
+                <p>Confidence: 80%</p>
+                <ul>
+                    <li>Strong bullish trend detected (ADX: 28.5)</li>
+                    <li>RSI confirms oversold condition (RSI: 29.8)</li>
+                    <li>MACD bullish crossover</li>
+                    <li>High volume confirming bullish move</li>
+                </ul>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <h4>Trend</h4>
+                    <p>Bullish (Strong)</p>
+                </div>
+                <div class="metric-card">
+                    <h4>RSI</h4>
+                    <p>29.8</p>
+                </div>
+                <div class="metric-card">
+                    <h4>ADX</h4>
+                    <p>28.5</p>
+                </div>
+                <div class="metric-card">
+                    <h4>Volume Trend</h4>
+                    <p>Strong Bullish</p>
+                </div>
+            </div>
+
+            <canvas id="priceChart"></canvas>
+            <canvas id="volumeChart"></canvas>
+        </div>
+
         <div class="features">
             <div class="feature-card">
                 <h3>Smart Trading Signals</h3>
@@ -73,24 +140,67 @@
             </div>
         </div>
 
-        <h2>Getting Started</h2>
-        <p>To start using Forex Wizard:</p>
+        <h2>Try the Live Platform</h2>
+        <p>To access real-time trading signals and analysis:</p>
         <ol>
-            <li>Click the "Launch Application" button above</li>
+            <li>Click the "Launch Live Application" button above</li>
             <li>Select your preferred currency pair</li>
             <li>Review the smart trading signals and technical analysis</li>
             <li>Use the portfolio management tools to track your trades</li>
         </ol>
-
-        <h2>Features</h2>
-        <ul>
-            <li>Multiple currency pairs support (EUR/USD, GBP/USD, USD/JPY, USD/CHF)</li>
-            <li>Advanced technical indicators (SMA, EMA, RSI, MACD, ADX)</li>
-            <li>Smart trading signals with confidence scores</li>
-            <li>Support and resistance level detection</li>
-            <li>Volume analysis and trend detection</li>
-            <li>Portfolio tracking and performance metrics</li>
-        </ul>
     </div>
+
+    <script>
+        // Sample data for price chart
+        const priceData = {
+            labels: Array.from({length: 30}, (_, i) => `Day ${i+1}`),
+            datasets: [{
+                label: 'Price',
+                data: Array.from({length: 30}, () => Math.random() * 10 + 90),
+                borderColor: '#2a5298',
+                fill: false
+            }]
+        };
+
+        // Sample data for volume chart
+        const volumeData = {
+            labels: Array.from({length: 30}, (_, i) => `Day ${i+1}`),
+            datasets: [{
+                label: 'Volume',
+                data: Array.from({length: 30}, () => Math.random() * 1000 + 5000),
+                backgroundColor: 'rgba(42, 82, 152, 0.5)'
+            }]
+        };
+
+        // Create price chart
+        new Chart(document.getElementById('priceChart').getContext('2d'), {
+            type: 'line',
+            data: priceData,
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Price Chart'
+                    }
+                }
+            }
+        });
+
+        // Create volume chart
+        new Chart(document.getElementById('volumeChart').getContext('2d'), {
+            type: 'bar',
+            data: volumeData,
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Volume Analysis'
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>

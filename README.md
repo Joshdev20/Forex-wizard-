@@ -2,11 +2,25 @@
 
 A sophisticated Forex trading platform built with Streamlit, providing comprehensive market analysis, trading signals, and portfolio management.
 
+## Live Demo
+
+- **Static Demo**: [View Features](https://joshdev20.github.io/Forex-wizard-/)
+- **Live Application**: [Try the Platform](https://replit.com/@USERNAME/Forex-wizard-)
+
 ## Features
 
 - **Smart Trading Signals**: Advanced technical analysis with confidence scores
 - **Real-time Analysis**: Multiple technical indicators and price action patterns
 - **Portfolio Management**: Track and analyze your trading performance
+
+### Analysis Features
+
+- Multiple timeframe analysis
+- Advanced technical indicators (RSI, MACD, ADX)
+- Volume analysis and trend detection
+- Support/Resistance identification
+- Price pattern recognition
+- Signal confidence scoring
 
 ## Technical Stack
 
@@ -18,7 +32,13 @@ A sophisticated Forex trading platform built with Streamlit, providing comprehen
 
 ## Getting Started
 
-Visit the live application: [Forex Wizard on Replit](https://replit.com/@USERNAME/Forex-wizard-)
+### Using the Live Platform
+
+1. Visit the [Live Application](https://replit.com/@USERNAME/Forex-wizard-)
+2. Select a currency pair from the dropdown menu
+3. Review the smart trading signals and confidence scores
+4. Analyze technical indicators and price patterns
+5. Use the portfolio management tools to track your trades
 
 ### Local Development
 
@@ -37,16 +57,9 @@ pip install streamlit pandas numpy plotly
 streamlit run app.py
 ```
 
-## Usage
-
-1. Select a currency pair from the dropdown menu
-2. Review the smart trading signals and confidence scores
-3. Analyze technical indicators and price patterns
-4. Use the portfolio management tools to track your trades
-
 ## Documentation
 
-For detailed documentation, visit our [GitHub Pages](https://joshdev20.github.io/Forex-wizard-/)
+For detailed technical documentation and API references, visit our [GitHub Pages](https://joshdev20.github.io/Forex-wizard-/)
 
 ## Contributing
 
