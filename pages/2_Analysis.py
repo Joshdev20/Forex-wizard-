@@ -2,8 +2,9 @@ import streamlit as st
 import plotly.graph_objects as go
 from utils.data_generator import generate_forex_data
 from utils.technical_analysis import calculate_sma, calculate_ema, calculate_rsi, calculate_macd
+from utils.trading_signals import generate_trading_signals
 
-st.title("Technical Analysis")
+st.title("Smart Trading Analysis")
 
 # Currency pair selection
 currency_pairs = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'USD/CHF']
@@ -12,16 +13,68 @@ selected_pair = st.selectbox('Select Currency Pair', currency_pairs)
 # Generate mock data
 df = generate_forex_data(selected_pair)
 
+# Generate trading signals
+signals = generate_trading_signals(df)
+
+# Display trading signals
+st.subheader("Trading Signals")
+signal_color = {
+    'buy': 'green',
+    'sell': 'red',
+    'hold': 'blue'
+}
+
+st.markdown(f"""
+<div style='padding: 20px; border-radius: 5px; background-color: {signal_color[signals['action']]}15'>
+    <h3 style='color: {signal_color[signals['action']]}'>
+        Recommended Action: {signals['action'].upper()} ({signals['strength'].upper()})
+    </h3>
+</div>
+""", unsafe_allow_html=True)
+
+if signals['entry_price']:
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Entry Price", f"{signals['entry_price']:.4f}")
+    with col2:
+        st.metric("Stop Loss", f"{signals['stop_loss']:.4f}")
+    with col3:
+        st.metric("Take Profit", f"{signals['take_profit']:.4f}")
+
+st.subheader("Signal Analysis")
+for reason in signals['reasoning']:
+    st.markdown(f"• {reason}")
+
+# Display key metrics
+st.subheader("Key Metrics")
+metrics = signals['metrics']
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.metric("Trend", metrics['trend'].capitalize())
+    st.metric("RSI", f"{metrics['rsi']:.2f}")
+with col2:
+    st.metric("Support", f"{metrics['support']:.4f}")
+    st.metric("MACD", f"{metrics['macd']:.4f}")
+with col3:
+    st.metric("Resistance", f"{metrics['resistance']:.4f}")
+
 # Technical indicator selection
 indicators = st.multiselect(
     'Select Technical Indicators',
     ['SMA', 'EMA', 'RSI', 'MACD'],
-    default=['SMA']
+    default=['SMA', 'RSI']
 )
 
 # Create the base price chart
 fig = go.Figure()
-fig.add_trace(go.Scatter(x=df['Date'], y=df['Close'], name='Price'))
+fig.add_trace(go.Candlestick(
+    x=df['Date'],
+    open=df['Open'],
+    high=df['High'],
+    low=df['Low'],
+    close=df['Close'],
+    name='Price'
+))
 
 # Add selected indicators
 if 'SMA' in indicators:
@@ -34,12 +87,26 @@ if 'EMA' in indicators:
     ema = calculate_ema(df, ema_period)
     fig.add_trace(go.Scatter(x=df['Date'], y=ema, name=f'EMA-{ema_period}'))
 
+# Add support and resistance levels
+fig.add_hline(y=metrics['support'], line_dash="dash", line_color="green", annotation_text="Support")
+fig.add_hline(y=metrics['resistance'], line_dash="dash", line_color="red", annotation_text="Resistance")
+
+fig.update_layout(
+    title=f'{selected_pair} Technical Analysis',
+    yaxis_title='Price',
+    xaxis_title='Date'
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
+# Display RSI and MACD in separate charts if selected
 if 'RSI' in indicators:
     rsi = calculate_rsi(df)
     fig2 = go.Figure()
     fig2.add_trace(go.Scatter(x=df['Date'], y=rsi, name='RSI'))
     fig2.add_hline(y=70, line_dash="dash", line_color="red")
     fig2.add_hline(y=30, line_dash="dash", line_color="green")
+    fig2.update_layout(title='Relative Strength Index (RSI)')
     st.plotly_chart(fig2, use_container_width=True)
 
 if 'MACD' in indicators:
@@ -47,10 +114,5 @@ if 'MACD' in indicators:
     fig3 = go.Figure()
     fig3.add_trace(go.Scatter(x=df['Date'], y=macd, name='MACD'))
     fig3.add_trace(go.Scatter(x=df['Date'], y=signal, name='Signal'))
+    fig3.update_layout(title='MACD')
     st.plotly_chart(fig3, use_container_width=True)
-
-fig.update_layout(title=f'{selected_pair} Technical Analysis',
-                 yaxis_title='Price',
-                 xaxis_title='Date')
-
-st.plotly_chart(fig, use_container_width=True)
