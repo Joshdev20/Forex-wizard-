@@ -88,10 +88,11 @@ def calculate_signal_confidence(signals):
     reasons = []
 
     # Trend alignment
-    if signals['trend'] == 'bullish' and signals['action'] == 'buy':
+    trend = signals['metrics']['trend']  # Get trend from metrics instead
+    if trend == 'bullish' and signals['action'] == 'buy':
         confidence += 20
         reasons.append("Trend aligned with signal")
-    elif signals['trend'] == 'bearish' and signals['action'] == 'sell':
+    elif trend == 'bearish' and signals['action'] == 'sell':
         confidence += 20
         reasons.append("Trend aligned with signal")
 
@@ -136,41 +137,48 @@ def generate_trading_signals(data):
     signal = {
         'action': 'hold',
         'strength': 'neutral',
-        'entry_price': None,
+        'entry_price': current_price,  # Always set entry price
         'stop_loss': None,
         'take_profit': None,
-        'reasoning': []
+        'reasoning': [],
+        'metrics': {  # Initialize metrics first
+            'trend': trend,
+            'trend_strength': 'weak',  # Default value
+            'rsi': rsi_value,
+            'macd': macd_value,
+            'support': support,
+            'resistance': resistance,
+            'adx': adx.iloc[-1],
+            'volume_trend': volume_trend
+        }
     }
 
     # Trend strength confirmation
-    trend_strength = 'weak'
     if adx.iloc[-1] > 25:
-        trend_strength = 'strong'
+        signal['metrics']['trend_strength'] = 'strong'
         signal['reasoning'].append(f"Strong trend detected (ADX: {adx.iloc[-1]:.1f})")
 
     # Signal generation logic
-    if trend == 'bullish' and trend_strength == 'strong':
+    if trend == 'bullish' and signal['metrics']['trend_strength'] == 'strong':
         if rsi_signal == 1 and macd_signal == 1:
             signal['action'] = 'buy'
             signal['strength'] = 'strong'
-            signal['entry_price'] = current_price
             signal['stop_loss'] = support
             signal['take_profit'] = current_price + (current_price - support) * 2
             signal['reasoning'].append("Strong buy signal: RSI oversold and MACD bullish crossover")
 
-            if volume_trend in ['strong_bullish']:
+            if volume_trend == 'strong_bullish':
                 signal['reasoning'].append("High volume confirming bullish move")
 
-    elif trend == 'bearish' and trend_strength == 'strong':
+    elif trend == 'bearish' and signal['metrics']['trend_strength'] == 'strong':
         if rsi_signal == -1 and macd_signal == -1:
             signal['action'] = 'sell'
             signal['strength'] = 'strong'
-            signal['entry_price'] = current_price
             signal['stop_loss'] = resistance
             signal['take_profit'] = current_price - (resistance - current_price) * 2
             signal['reasoning'].append("Strong sell signal: RSI overbought and MACD bearish crossover")
 
-            if volume_trend in ['strong_bearish']:
+            if volume_trend == 'strong_bearish':
                 signal['reasoning'].append("High volume confirming bearish move")
 
     # Add price pattern signals
@@ -181,18 +189,6 @@ def generate_trading_signals(data):
     confidence, confidence_reasons = calculate_signal_confidence(signal)
     signal['confidence'] = confidence
     signal['reasoning'].extend(confidence_reasons)
-
-    # Add metrics
-    signal['metrics'] = {
-        'trend': trend,
-        'trend_strength': trend_strength,
-        'rsi': rsi_value,
-        'macd': macd_value,
-        'support': support,
-        'resistance': resistance,
-        'adx': adx.iloc[-1],
-        'volume_trend': volume_trend
-    }
 
     return signal
 
