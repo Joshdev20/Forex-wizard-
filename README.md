@@ -5,7 +5,7 @@ A sophisticated Forex trading platform built with Streamlit, providing comprehen
 ## Live Demo
 
 - **Static Demo**: [View Features](https://joshdev20.github.io/Forex-wizard-/)
-- **Live Application**: [Try the Platform](https://replit.com/@USERNAME/Forex-wizard-)
+- **Live Application**: [Try the Platform](https://replit.com/@maloneykristen5/Forex-wizard-)
 
 ## Features
 
@@ -34,7 +34,7 @@ A sophisticated Forex trading platform built with Streamlit, providing comprehen
 
 ### Using the Live Platform
 
-1. Visit the [Live Application](https://replit.com/@USERNAME/Forex-wizard-)
+1. Visit the [Live Application](https://replit.com/@maloneykristen5/Forex-wizard-)
 2. Select a currency pair from the dropdown menu
 3. Review the smart trading signals and confidence scores
 4. Analyze technical indicators and price patterns
